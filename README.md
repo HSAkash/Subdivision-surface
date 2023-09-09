@@ -17,7 +17,7 @@ foursubdiv.png - four
 
 ## Output
 | Before Iteration | After Iteration |
-| -------- | -------- | -------- |
+| -------- | -------- |
 | ![](images/01.png) | ![](images/02.png) |
 
 
