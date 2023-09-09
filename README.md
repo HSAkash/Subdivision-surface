@@ -15,6 +15,12 @@ onesubdiv.png - output with one subdivision
 twosubdiv.png - two subdivisions
 foursubdiv.png - four
 
+## Output
+| Before Iteration | After Iteration |
+| -------- | -------- | -------- |
+| ![](images/01.png) | ![](images/02.png) |
+
+
 
 ## Installation
 ```
