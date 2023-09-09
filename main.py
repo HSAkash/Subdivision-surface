@@ -1,6 +1,8 @@
 import trimesh
+import argparse
 from cmc import cmc_subdiv
 from pyglet import gl
+
 
 def save_mesh_png(scene, path='output.png'):
         window_conf = gl.Config(double_buffer=True, depth_size=6)
@@ -23,30 +25,47 @@ def plot_mesh(vertices, faces, colors):
     scene = trimesh.Scene(mesh)
     scene.show()
     return scene
+
+def get_arguments():
+    parser = argparse.ArgumentParser(description='CMC Subdivision')
+    parser.add_argument('--mesh', type=str, help='path to mesh file')
+    parser.add_argument('--iterations', type=int, default=1, help='number of iterations')
+    parser.add_argument('--yes-save', action='store_true', help='save figure as image')
+    parser.add_argument('--path', type=str, default='output.png', help='image save path')
+    parser.add_argument('--R', type=int, default=0, help='Red 0-255')
+    parser.add_argument('--G', type=int, default=0, help='Green 0-255')
+    parser.add_argument('--B', type=int, default=0, help='Blue 0-255')
+    parser.add_argument('--Opacity', type=int, default=255, help='Opacity 0-255')
+    return parser.parse_args()
     
 
 
 if __name__ == '__main__':
-    mesh_path = input("Enter path to mesh (.ply): ")
-    iterations = int(input("Enter number of iterations: "))
-    save_png = input("Save png? (y/n): ")
-    if save_png == 'y':
-        save_png = True
-        save_png_path = input("Enter path to save png (.png/.jpg/.jpeg): ")
-    else:
-        save_png = False
-    print(f"Color inputs")
-    R = int(input("Red 0-255 : "))
-    G = int(input("Green 0-255 : "))
-    B = int(input("Blue 0-255 : "))
-    Opacity = int(input("Opacity 0-255 : "))
-    # object_mesh = trimesh.load_mesh('data-li/tower.ply')
-    object_mesh = trimesh.load_mesh(mesh_path)
-    input_points = object_mesh.vertices
-    if 'vertex_indices' in object_mesh.metadata['_ply_raw']['face']['data'].keys():
-        input_faces = object_mesh.metadata['_ply_raw']['face']['data']['vertex_indices']
-    else:
-        input_faces = object_mesh.metadata['_ply_raw']['face']['data']['vertex_index']
+
+    args = get_arguments()
+    mesh_path = args.mesh
+    iterations = args.iterations
+    save_png = args.yes_save
+    save_png_path = args.path
+    R = args.R
+    G = args.G
+    B = args.B
+    Opacity = args.Opacity
+
+    
+    try:
+        object_mesh = trimesh.load_mesh(mesh_path)
+        input_points = object_mesh.vertices
+        if 'vertex_indices' in object_mesh.metadata['_ply_raw']['face']['data'].keys():
+            input_faces = object_mesh.metadata['_ply_raw']['face']['data']['vertex_indices']
+        else:
+            input_faces = object_mesh.metadata['_ply_raw']['face']['data']['vertex_index']
+    except:
+        print(f"""_________________________Error___________________________""")
+        print("Error loading mesh file")
+        exit(1)
+
+
 
     output_points, output_faces = input_points, input_faces
 
