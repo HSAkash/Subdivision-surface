@@ -20,3 +20,26 @@ foursubdiv.png - four
 ```
 pip install -r requirements.txt
 ```
+
+## Run the command
+```
+python main.py -h
+```
+```
+usage: main.py [-h] [--mesh MESH] [--iterations ITERATIONS] [--yes-save]
+               [--path PATH] [--R R] [--G G] [--B B] [--Opacity OPACITY]
+
+CMC Subdivision
+
+options:
+  -h, --help            show this help message and exit
+  --mesh MESH           path to mesh file
+  --iterations ITERATIONS
+                        number of iterations
+  --yes-save            save figure as image
+  --path PATH           image save path
+  --R R                 Red 0-255
+  --G G                 Green 0-255
+  --B B                 Blue 0-255
+  --Opacity OPACITY     Opacity 0-255
+```
