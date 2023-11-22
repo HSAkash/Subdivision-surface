@@ -1,5 +1,7 @@
 numpy
 matplotlib
 PyQt5
-trimesh
+trimesh==4.0.4
 pyglet<2.0.0,>=1.4.0
+vedo==2023.5.0
+tqdm
