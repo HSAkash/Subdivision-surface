@@ -2,9 +2,10 @@ import trimesh
 from cmc import cmc_subdiv
 from vedo import trimesh2vedo, show, Line, Plotter, Points
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 
-def plot_mesh(vertices, faces, cmap="magma", edge_color='black', edge_width=4, point_color='green', point_size=5):
+def plot_mesh(vertices, faces,edge_plot_bool, cmap="magma", edge_color='black', edge_width=4, point_color='green', point_size=5):
     meshe = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
     vmeshes = trimesh2vedo(meshe)
     # Define some dummy point scalar
@@ -19,14 +20,16 @@ def plot_mesh(vertices, faces, cmap="magma", edge_color='black', edge_width=4, p
     plotter.add(vmeshes)
 
     # Add edges to the plot
-    edges = meshe.edges
-    for edge in edges:
-        p1, p2 = meshe.vertices[edge]
-        plotter.add(Line(p1, p2, c=edge_color, lw = edge_width))
+    print(f"________________________Edge Ploting Started___________________________")
+    if edge_plot_bool:
+        edges = meshe.edges
+        for edge in tqdm(edges):
+            p1, p2 = meshe.vertices[edge]
+            plotter.add(Line(p1, p2, c=edge_color, lw = edge_width))
 
-    # Add vertices to the plot
-    vertices = Points(meshe.vertices, r=point_size, c=point_color)
-    plotter.add(vertices)
+        # Add vertices to the plot
+        vertices = Points(meshe.vertices, r=point_size, c=point_color)
+        plotter.add(vertices)
 
     # Show the plot with no axes or background grid
     plotter.show(axes=None)
@@ -36,6 +39,7 @@ def plot_mesh_with_initial(
         vertices,
         faces,
         initial_mesh,
+        edge_plot_bool,
         cmap="magma",
         edge_color='black',
         edge_width=4,
@@ -59,23 +63,25 @@ def plot_mesh_with_initial(
     plotter.add(vmeshes)
 
     # Add edges to the plot
-    edges = meshe.edges
-    for edge in edges:
-        p1, p2 = meshe.vertices[edge]
-        plotter.add(Line(p1, p2, c=edge_color, lw = edge_width))
+    if edge_plot_bool:
+        print(f"________________________Edge Ploting Started___________________________")
+        edges = meshe.edges
+        for edge in tqdm(edges):
+            p1, p2 = meshe.vertices[edge]
+            plotter.add(Line(p1, p2, c=edge_color, lw = edge_width))
 
-    # Add vertices to the plot
-    vertices = Points(meshe.vertices, r=point_size, c=point_color)
-    plotter.add(vertices)
+        # Add vertices to the plot
+        vertices = Points(meshe.vertices, r=point_size, c=point_color)
+        plotter.add(vertices)
 
-    # initial mesh
-    initial_edge = initial_mesh.edges
-    for edge in initial_edge:
-        p1, p2 = initial_mesh.vertices[edge]
-        plotter.add(Line(p1, p2, c=initial_edge_color, lw = initial_edge_width))
+        # initial mesh
+        initial_edge = initial_mesh.edges
+        for edge in tqdm(initial_edge):
+            p1, p2 = initial_mesh.vertices[edge]
+            plotter.add(Line(p1, p2, c=initial_edge_color, lw = initial_edge_width))
 
-    initial_vertices = Points(initial_mesh.vertices, r=initial_point_size, c=initial_point_color)
-    plotter.add(initial_vertices)
+        initial_vertices = Points(initial_mesh.vertices, r=initial_point_size, c=initial_point_color)
+        plotter.add(initial_vertices)
 
 
     # Show the plot with no axes or background grid
@@ -95,6 +101,8 @@ if __name__ == '__main__':
     edge_width = int(input("Enter edge width: "))
     point_color = input("Enter point color: ")
     point_size = int(input("Enter point size: "))
+    edge_plot_bool = input("Show edge plot: y/n: ")
+    edge_plot_bool = True if edge_plot_bool.lower()=='y' else False
     initial_mesh = input("Show initial mesh edge: y/n: ")
     initial_mesh = initial_mesh.lower()
 
@@ -123,9 +131,10 @@ if __name__ == '__main__':
 
 
     output_points, output_faces = input_points, input_faces
-
-    for i in range(iterations):
+    print(f"________________________Iteration Started___________________________")
+    for i in tqdm(range(iterations)):
         output_points, output_faces = cmc_subdiv(output_points, output_faces)
+    print(f"________________________Iteration Completed___________________________")
 
 
     # plot_mesh(output_points, output_faces, cmap=cmap, edge_color=edge_color, edge_width=edge_width, point_color=point_color, point_size=point_size)
@@ -135,6 +144,7 @@ if __name__ == '__main__':
                 output_points,
                 output_faces,
                 object_mesh,
+                edge_plot_bool,
                 cmap=cmap,
                 edge_color=edge_color,
                 edge_width=edge_width,
@@ -147,4 +157,4 @@ if __name__ == '__main__':
             )
     else:
         for cmap in plt.colormaps():
-            plot_mesh(output_points, output_faces, cmap=cmap, edge_color=edge_color, edge_width=edge_width, point_color=point_color, point_size=point_size)
+            plot_mesh(output_points, output_faces,edge_plot_bool, cmap=cmap, edge_color=edge_color, edge_width=edge_width, point_color=point_color, point_size=point_size)
